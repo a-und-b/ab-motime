@@ -22,9 +22,22 @@
               </p>
             </div>
             <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+              <select v-model="entry.projectId" @change="handleProjectChange(entry)" class="mr-2">
+                <option value="">Select Project</option>
+                <option v-for="project in projects" :key="project.id" :value="project.id">
+                  {{ project.name }}
+                </option>
+              </select>
+              <select v-model="entry.taskId" class="mr-2">
+                <option value="">Select Task</option>
+                <option v-for="task in tasks" :key="task.id" :value="task.id">
+                  {{ task.name }}
+                </option>
+              </select>
               <button
                 @click="$emit('transfer', entry)"
-                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                :disabled="!entry.projectId || !entry.taskId"
+                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
               >
                 Transfer
               </button>
@@ -43,9 +56,22 @@ export default {
     entries: {
       type: Array,
       required: true
+    },
+    projects: {
+      type: Array,
+      required: true
+    },
+    tasks: {
+      type: Array,
+      required: true
     }
   },
-  emits: ['transfer']
+  emits: ['transfer', 'projectSelected'],
+  methods: {
+    handleProjectChange(entry) {
+      this.$emit('projectSelected', entry.projectId)
+    }
+  }
 }
 </script>
 

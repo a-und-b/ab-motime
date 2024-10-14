@@ -5,10 +5,10 @@ const mocoController = require('../controllers/mocoController');
 
 // Timing routes
 router.get('/timing', timingController.getTimingData);
-router.post('/timing', timingController.addTimingEntry);
 
 // Moco routes
-router.get('/moco', mocoController.getMocoData);
-router.post('/moco', mocoController.addMocoEntry);
+router.get('/moco/projects', mocoController.getMocoProjects);
+router.get('/moco/projects/:projectId/tasks', mocoController.getMocoTasks);
+router.post('/moco/activities', mocoController.addMocoEntry);
 
 module.exports = router;

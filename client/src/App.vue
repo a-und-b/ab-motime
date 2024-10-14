@@ -1,14 +1,20 @@
 <template>
   <div id="app">
     <h1>MoTime</h1>
-    <TimeEntryList :entries="timeEntries" @transfer="handleTransfer" />
+    <TimeEntryList 
+      :entries="timeEntries" 
+      :projects="mocoProjects"
+      :tasks="mocoTasks"
+      @transfer="handleTransfer"
+      @projectSelected="handleProjectSelected"
+    />
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
 import TimeEntryList from './components/TimeEntryList.vue'
-import { getTimingData, addMocoEntry } from './api'
+import { getTimingData, addMocoEntry, getMocoProjects, getMocoTasks } from './api'
 
 export default {
   name: 'App',
@@ -17,38 +23,68 @@ export default {
   },
   setup() {
     const timeEntries = ref([])
+    const mocoProjects = ref([])
+    const mocoTasks = ref([])
 
     const fetchTimeEntries = async () => {
       try {
         timeEntries.value = await getTimingData()
       } catch (error) {
         console.error('Error fetching time entries:', error)
-        // TODO: Implement error handling (e.g., show an error message to the user)
+      }
+    }
+
+    const fetchMocoProjects = async () => {
+      try {
+        mocoProjects.value = await getMocoProjects()
+      } catch (error) {
+        console.error('Error fetching Moco projects:', error)
+      }
+    }
+
+    const handleProjectSelected = async (projectId) => {
+      try {
+        mocoTasks.value = await getMocoTasks(projectId)
+      } catch (error) {
+        console.error('Error fetching Moco tasks:', error)
       }
     }
 
     const handleTransfer = async (entry) => {
       try {
+        // Format the date to YYYY-MM-DD
+        const formattedDate = new Date(entry.startDate).toISOString().split('T')[0];
+        
+        // Convert duration to hours
+        const [hours, minutes] = entry.roundedDuration.split('h ');
+        const durationInHours = parseFloat(hours) + (parseInt(minutes) / 60);
+        
         const response = await addMocoEntry({
-          date: entry.startDate.split('T')[0],
-          projectId: entry.projectId, // You'll need to map this from your Moco projects
-          taskId: entry.taskId, // You'll need to map this from your Moco tasks
-          hours: parseFloat(entry.roundedDuration.split('h')[0]),
+          date: formattedDate,
+          project_id: entry.projectId,
+          task_id: entry.taskId,
+          hours: durationInHours,
           description: entry.description
-        })
-        console.log('Entry transferred:', response)
-        // TODO: Update the UI to reflect the transferred entry (e.g., disable the transfer button)
+        });
+        console.log('Entry transferred:', response);
+        // TODO: Update the UI to reflect the transferred entry
       } catch (error) {
-        console.error('Error transferring entry:', error)
-        // TODO: Implement error handling (e.g., show an error message to the user)
+        console.error('Error transferring entry:', error);
+        // TODO: Show an error message to the user
       }
-    }
+    };
 
-    onMounted(fetchTimeEntries)
+    onMounted(() => {
+      fetchTimeEntries()
+      fetchMocoProjects()
+    });
 
     return {
       timeEntries,
-      handleTransfer
+      mocoProjects,
+      mocoTasks,
+      handleTransfer,
+      handleProjectSelected
     }
   }
 }

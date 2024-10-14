@@ -16,10 +16,30 @@ export const getTimingData = async () => {
 
 export const addMocoEntry = async (entry) => {
   try {
-    const response = await api.post('/moco', entry)
+    const response = await api.post('/moco/activities', entry)
     return response.data
   } catch (error) {
     console.error('Error adding Moco entry:', error)
+    throw error
+  }
+}
+
+export const getMocoProjects = async () => {
+  try {
+    const response = await api.get('/moco/projects')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching Moco projects:', error)
+    throw error
+  }
+}
+
+export const getMocoTasks = async (projectId) => {
+  try {
+    const response = await api.get(`/moco/projects/${projectId}/tasks`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching Moco tasks:', error)
     throw error
   }
 }
