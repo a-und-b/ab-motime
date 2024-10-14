@@ -11,7 +11,7 @@
             </p>
             <div class="ml-2 flex-shrink-0 flex">
               <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                {{ entry.duration }}
+                {{ entry.duration }} ({{ entry.roundedDuration }})
               </p>
             </div>
           </div>
@@ -19,9 +19,6 @@
             <div class="sm:flex">
               <p class="flex items-center text-sm text-gray-500">
                 {{ entry.task }}
-              </p>
-              <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                {{ entry.description }}
               </p>
             </div>
             <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
@@ -41,6 +38,7 @@
 
 <script>
 export default {
+  name: 'TimeEntryList',
   props: {
     entries: {
       type: Array,

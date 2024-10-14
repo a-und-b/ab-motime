@@ -4,3 +4,5 @@ backend/.env
 .cursorignore
 /examples
 .env
+combined.log
+error.log

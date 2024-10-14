@@ -1,48 +1,46 @@
 const fs = require('fs').promises;
 const path = require('path');
-const timeUtils = require('../utils/timeUtils');
+const logger = require('../utils/logger');
+const { calculateDuration, roundToQuarterHour } = require('../utils/timeUtils');
 
-// Funktion zum Einlesen und Parsen der timing.json Datei
-async function parseTimingJson() {
+const TIMING_DATA_PATH = path.join(__dirname, '../../timing.json');
+
+exports.getTimingData = async (req, res, next) => {
   try {
-    const filePath = path.join(__dirname, '..', '..', 'timing.json');
-    const data = await fs.readFile(filePath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading timing.json:', error);
-    throw error;
-  }
-}
+    const rawData = await fs.readFile(TIMING_DATA_PATH, 'utf8');
+    const timingData = JSON.parse(rawData);
 
-// Funktion zum Verarbeiten der Timing-Daten
-function processTimingData(data) {
-  return data.map(entry => {
-    const [customerCode, projectName, task] = entry.project.split(' / ');
-    const duration = timeUtils.roundToQuarterHour(entry.duration);
-    
-    return {
-      date: new Date(entry.startDate).toISOString().split('T')[0],
-      customerCode,
-      projectName,
-      task,
+    const processedData = timingData.map(entry => ({
+      id: entry.id,
+      projectName: entry.project,
+      task: entry.activityTitle,
       description: entry.activityTitle,
-      duration,
-      originalDuration: entry.duration
-    };
-  });
-}
+      startDate: entry.startDate,
+      endDate: entry.endDate,
+      duration: calculateDuration(entry.startDate, entry.endDate),
+      roundedDuration: roundToQuarterHour(new Date(entry.endDate) - new Date(entry.startDate))
+    }));
 
-exports.getTimingData = async (req, res) => {
-  try {
-    const rawData = await parseTimingJson();
-    const processedData = processTimingData(rawData);
     res.json(processedData);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching timing data' });
+    logger.error('Error fetching Timing data:', error);
+    next(error);
   }
 };
 
-exports.addTimingEntry = (req, res) => {
-  // Diese Funktion wird vorerst nicht implementiert, da wir die Daten aus der JSON-Datei lesen
-  res.status(501).json({ message: 'Not implemented' });
+exports.addTimingEntry = async (req, res, next) => {
+  try {
+    const newEntry = req.body;
+    const rawData = await fs.readFile(TIMING_DATA_PATH, 'utf8');
+    const timingData = JSON.parse(rawData);
+
+    timingData.push(newEntry);
+
+    await fs.writeFile(TIMING_DATA_PATH, JSON.stringify(timingData, null, 2));
+
+    res.status(201).json(newEntry);
+  } catch (error) {
+    logger.error('Error adding Timing entry:', error);
+    next(error);
+  }
 };

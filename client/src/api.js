@@ -1,15 +1,25 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: '/api'  // This will use the relative path, which will work with our new setup
+  baseURL: '/api'
 })
 
 export const getTimingData = async () => {
-  const response = await api.get('/timing')
-  return response.data
+  try {
+    const response = await api.get('/timing')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching Timing data:', error)
+    throw error
+  }
 }
 
 export const addMocoEntry = async (entry) => {
-  const response = await api.post('/moco', entry)
-  return response.data
+  try {
+    const response = await api.post('/moco', entry)
+    return response.data
+  } catch (error) {
+    console.error('Error adding Moco entry:', error)
+    throw error
+  }
 }

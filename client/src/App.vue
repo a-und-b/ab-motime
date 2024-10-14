@@ -1,48 +1,39 @@
 <template>
-  <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">MoTime</h1>
-    <UserSelect @user-changed="handleUserChange" />
+  <div id="app">
+    <h1>MoTime</h1>
     <TimeEntryList :entries="timeEntries" @transfer="handleTransfer" />
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
-import UserSelect from './components/UserSelect.vue'
 import TimeEntryList from './components/TimeEntryList.vue'
 import { getTimingData, addMocoEntry } from './api'
 
 export default {
+  name: 'App',
   components: {
-    UserSelect,
     TimeEntryList
   },
   setup() {
     const timeEntries = ref([])
-    const currentUser = ref(null)
 
     const fetchTimeEntries = async () => {
       try {
-        const data = await getTimingData()
-        timeEntries.value = data
+        timeEntries.value = await getTimingData()
       } catch (error) {
         console.error('Error fetching time entries:', error)
         // TODO: Implement error handling (e.g., show an error message to the user)
       }
     }
 
-    const handleUserChange = (user) => {
-      currentUser.value = user
-      fetchTimeEntries()
-    }
-
     const handleTransfer = async (entry) => {
       try {
         const response = await addMocoEntry({
-          date: entry.date,
+          date: entry.startDate.split('T')[0],
           projectId: entry.projectId, // You'll need to map this from your Moco projects
           taskId: entry.taskId, // You'll need to map this from your Moco tasks
-          hours: entry.duration,
+          hours: parseFloat(entry.roundedDuration.split('h')[0]),
           description: entry.description
         })
         console.log('Entry transferred:', response)
@@ -57,7 +48,6 @@ export default {
 
     return {
       timeEntries,
-      handleUserChange,
       handleTransfer
     }
   }
