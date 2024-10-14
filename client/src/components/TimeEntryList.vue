@@ -30,7 +30,7 @@
               </select>
               <select v-model="entry.taskId" class="mr-2">
                 <option value="">Select Task</option>
-                <option v-for="task in tasks" :key="task.id" :value="task.id">
+                <option v-for="task in tasksForProject(entry.projectId)" :key="task.id" :value="task.id">
                   {{ task.name }}
                 </option>
               </select>
@@ -62,14 +62,66 @@ export default {
       required: true
     },
     tasks: {
-      type: Array,
+      type: Object,
       required: true
     }
   },
   emits: ['transfer', 'projectSelected'],
   methods: {
     handleProjectChange(entry) {
-      this.$emit('projectSelected', entry.projectId)
+      this.$emit('projectSelected', entry.projectId);
+      entry.taskId = ''; // Reset task when project changes
+    },
+    tasksForProject(projectId) {
+      return this.tasks[projectId] || [];
+    },
+    findMatchingProject(entryProjectName) {
+      const normalizedEntryName = this.normalizeProjectName(entryProjectName);
+      return this.projects.find(project => {
+        const normalizedProjectName = this.normalizeProjectName(project.name);
+        return normalizedProjectName.includes(normalizedEntryName) || 
+               normalizedEntryName.includes(normalizedProjectName);
+      });
+    },
+    normalizeProjectName(name) {
+      return name.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '') // Remove non-alphanumeric characters
+        .trim();
+    },
+    findMatchingTask(projectId, entryTaskName) {
+      const projectTasks = this.tasksForProject(projectId);
+      return projectTasks.find(task => 
+        task.name.toLowerCase().includes(entryTaskName.toLowerCase())
+      );
+    }
+  },
+  watch: {
+    entries: {
+      immediate: true,
+      handler(newEntries) {
+        newEntries.forEach(entry => {
+          console.log(`Trying to match project for entry: ${entry.projectName}`);
+          if (!entry.projectId) {
+            const matchingProject = this.findMatchingProject(entry.projectName);
+            if (matchingProject) {
+              console.log(`Matched project: ${matchingProject.name}`);
+              entry.projectId = matchingProject.id;
+              this.$emit('projectSelected', matchingProject.id);
+            } else {
+              console.log(`No matching project found for: ${entry.projectName}`);
+            }
+          }
+          if (entry.projectId && !entry.taskId) {
+            const matchingTask = this.findMatchingTask(entry.projectId, entry.task);
+            if (matchingTask) {
+              console.log(`Matched task: ${matchingTask.name}`);
+              entry.taskId = matchingTask.id;
+            } else {
+              console.log(`No matching task found for: ${entry.task}`);
+            }
+          }
+        });
+      }
     }
   }
 }
@@ -80,3 +132,4 @@ export default {
   margin-top: 20px;
 }
 </style>
+

@@ -24,7 +24,7 @@ export default {
   setup() {
     const timeEntries = ref([])
     const mocoProjects = ref([])
-    const mocoTasks = ref([])
+    const mocoTasks = ref({})
 
     const fetchTimeEntries = async () => {
       try {
@@ -37,30 +37,30 @@ export default {
     const fetchMocoProjects = async () => {
       try {
         mocoProjects.value = await getMocoProjects()
+        console.log('Fetched Moco projects:', mocoProjects.value)
       } catch (error) {
         console.error('Error fetching Moco projects:', error)
       }
     }
 
     const handleProjectSelected = async (projectId) => {
-      try {
-        mocoTasks.value = await getMocoTasks(projectId)
-      } catch (error) {
-        console.error('Error fetching Moco tasks:', error)
+      if (!mocoTasks.value[projectId]) {
+        try {
+          mocoTasks.value[projectId] = await getMocoTasks(projectId)
+          console.log(`Fetched tasks for project ${projectId}:`, mocoTasks.value[projectId])
+        } catch (error) {
+          console.error('Error fetching Moco tasks:', error)
+        }
       }
     }
 
     const handleTransfer = async (entry) => {
       try {
-        // Format the date to YYYY-MM-DD
-        const formattedDate = new Date(entry.startDate).toISOString().split('T')[0];
-        
-        // Convert duration to hours
         const [hours, minutes] = entry.roundedDuration.split('h ');
         const durationInHours = parseFloat(hours) + (parseInt(minutes) / 60);
-        
+
         const response = await addMocoEntry({
-          date: formattedDate,
+          date: entry.startDate.split('T')[0],
           project_id: entry.projectId,
           task_id: entry.taskId,
           hours: durationInHours,
@@ -72,12 +72,12 @@ export default {
         console.error('Error transferring entry:', error);
         // TODO: Show an error message to the user
       }
-    };
+    }
 
     onMounted(() => {
       fetchTimeEntries()
       fetchMocoProjects()
-    });
+    })
 
     return {
       timeEntries,

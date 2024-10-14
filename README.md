@@ -11,11 +11,29 @@ The application currently supports:
 - Creating completed time entries in Moco based on Timing data
 - Basic error handling and logging
 
+## Current Goal
+
+We are currently working on implementing automatic project and task mapping between Timing and Moco. Specifically:
+
+1. For each Timing entry, we aim to automatically match the project name with the corresponding Moco project.
+   - The Timing project name format is typically "PREFIX ▸ Project Name ▸ Task"
+   - The Moco project name format is typically "[PREFIX] Project Name"
+
+2. If a project match is found, we then attempt to match the task name.
+   - The task name in Timing is the last part of the project name string (after the last "▸")
+   - We look for an exact match (case-insensitive) in the Moco tasks for the matched project
+
+3. When a match is found, the UI pre-selects the matched project and task in the dropdown menus.
+
+4. Users should still be able to manually change the selected project and task if needed.
+
+This automatic mapping aims to streamline the process of transferring time entries from Timing to Moco, reducing manual work while maintaining flexibility for user adjustments.
+
 ## Setup
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/motime.git
+   git clone https://github.com/a-und-b/motime.git
    cd motime
    ```
 
@@ -60,6 +78,7 @@ The application currently supports:
 ## TODO
 
 - Implement automatic project and task mapping
+- Aggregate and display same-day entries with identical project and task; transfer as single entry to Moco
 - Improve error handling and user feedback
 - Implement unit and integration tests
 - Implement persistent storage for transferred entries
