@@ -2,6 +2,15 @@
 
 MoTime is a time tracking application that integrates Timing data with Moco.
 
+## Current State
+
+The application currently supports:
+- Reading time entries from a local Timing JSON file
+- Displaying time entries in a list view
+- Fetching projects and tasks from Moco API
+- Creating completed time entries in Moco based on Timing data
+- Basic error handling and logging
+
 ## Setup
 
 1. Clone the repository:
@@ -20,18 +29,19 @@ MoTime is a time tracking application that integrates Timing data with Moco.
    PORT=3000
    MOCO_DOMAIN=your_moco_domain
    MOCO_API_KEY=your_moco_api_key
-   MONGODB_URI=your_mongodb_uri
    NODE_ENV=development
    ```
 
-4. Start the development server:
+4. Place your Timing JSON file in the root directory and name it `timing.json`.
+
+5. Start the development server:
    ```
    npm run dev
    ```
 
    This will start both the backend server and the frontend development server.
 
-5. Open your browser and navigate to `http://localhost:8080` to view the application.
+6. Open your browser and navigate to `http://localhost:8080` to view the application.
 
 ## Scripts
 
@@ -40,14 +50,23 @@ MoTime is a time tracking application that integrates Timing data with Moco.
 - `npm run client`: Start only the frontend development server
 - `npm run build`: Build the frontend for production
 
+## Features
+
+- View Timing entries
+- Select Moco projects and tasks for each entry
+- Transfer time entries from Timing to Moco
+- Basic error handling and logging
+
 ## TODO
 
-- Implementation of a database for persistent data storage
-- Improvement of user authentication and management
-- Automatic mapping of projects and tasks between Timing and Moco
-- Implementation of error handling and user notifications
-- Performance optimization for larger datasets
-- Implementation of unit and integration tests
+- Implement automatic project and task mapping
+- Improve error handling and user feedback
+- Implement unit and integration tests
+- Implement persistent storage for transferred entries
+- Add filtering and sorting options for time entries
+- Optimize performance for larger datasets
+- Add more detailed reporting and analytics features
+- Add user authentication and authorization
 
 ## License
 
