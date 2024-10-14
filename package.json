@@ -25,7 +25,8 @@
     "mongoose": "^5.12.3",
     "vue": "^3.2.13",
     "vue-router": "^4.4.5",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.8",

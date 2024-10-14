@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api'  // Stellen Sie sicher, dass dies mit Ihrem Backend-Port übereinstimmt
+  baseURL: '/api'  // This will use the relative path, which will work with our new setup
 })
 
 export const getTimingData = async () => {

@@ -1,16 +1,17 @@
 const mocoClient = require('../utils/mocoClient');
+const logger = require('../utils/logger');
 
-exports.getMocoData = async (req, res) => {
+exports.getMocoData = async (req, res, next) => {
   try {
     const response = await mocoClient.get('/activities');
     res.json(response.data);
   } catch (error) {
-    console.error('Error fetching Moco data:', error);
-    res.status(500).json({ error: 'Error fetching Moco data' });
+    logger.error('Error fetching Moco data:', error);
+    next(error);
   }
 };
 
-exports.addMocoEntry = async (req, res) => {
+exports.addMocoEntry = async (req, res, next) => {
   try {
     const { date, projectId, taskId, hours, description } = req.body;
     const response = await mocoClient.post('/activities', {
@@ -22,7 +23,7 @@ exports.addMocoEntry = async (req, res) => {
     });
     res.json(response.data);
   } catch (error) {
-    console.error('Error adding Moco entry:', error);
-    res.status(500).json({ error: 'Error adding Moco entry' });
+    logger.error('Error adding Moco entry:', error);
+    next(error);
   }
 };
