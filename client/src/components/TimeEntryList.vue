@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import { findMatchingProject, findMatchingTask } from '../utils/projectMatcher';
+
 export default {
   name: 'TimeEntryList',
   props: {
@@ -67,6 +69,11 @@ export default {
     }
   },
   emits: ['transfer', 'projectSelected'],
+  data() {
+    return {
+      matchingComplete: false,
+    }
+  },
   methods: {
     handleProjectChange(entry) {
       this.$emit('projectSelected', entry.projectId);
@@ -76,53 +83,83 @@ export default {
       return this.tasks[projectId] || [];
     },
     findMatchingProject(entryProjectName) {
-      const normalizedEntryName = this.normalizeProjectName(entryProjectName);
-      return this.projects.find(project => {
-        const normalizedProjectName = this.normalizeProjectName(project.name);
-        return normalizedProjectName.includes(normalizedEntryName) || 
-               normalizedEntryName.includes(normalizedProjectName);
-      });
+      return findMatchingProject(entryProjectName, this.projects);
     },
-    normalizeProjectName(name) {
-      return name.toLowerCase()
-        .replace(/[^a-z0-9]+/g, '') // Remove non-alphanumeric characters
-        .trim();
-    },
-    findMatchingTask(projectId, entryTaskName) {
+    findMatchingTask(projectId, entryProjectName) {
       const projectTasks = this.tasksForProject(projectId);
-      return projectTasks.find(task => 
-        task.name.toLowerCase().includes(entryTaskName.toLowerCase())
-      );
+      return findMatchingTask(entryProjectName, projectTasks);
+    },
+    performMatching() {
+      if (!this.entries.length || !this.projects.length) {
+        console.log("Not enough data to perform matching");
+        return;
+      }
+
+      this.entries.forEach(entry => {
+        console.log(`Trying to match project for entry: ${entry.projectName}`);
+        if (!entry.projectId) {
+          const matchingProject = this.findMatchingProject(entry.projectName);
+          if (matchingProject) {
+            console.log(`Matched project: ${matchingProject.name}`);
+            entry.projectId = matchingProject.id;
+            this.$emit('projectSelected', matchingProject.id);
+          } else {
+            console.log(`No matching project found for: ${entry.projectName}`);
+          }
+        }
+        if (entry.projectId && !entry.taskId) {
+          const matchingTask = this.findMatchingTask(entry.projectId, entry.projectName);
+          if (matchingTask) {
+            console.log(`Matched task: ${matchingTask.name}`);
+            entry.taskId = matchingTask.id;
+          } else {
+            console.log(`No matching task found for: ${entry.projectName}`);
+          }
+        }
+      });
+
+      this.matchingComplete = true;
+      this.saveMatchesToLocalStorage();
+    },
+    saveMatchesToLocalStorage() {
+      const matchedEntries = this.entries.map(entry => ({
+        id: entry.id,
+        projectId: entry.projectId,
+        taskId: entry.taskId
+      }));
+      localStorage.setItem('matchedEntries', JSON.stringify(matchedEntries));
+    },
+    loadMatchesFromLocalStorage() {
+      const savedMatches = localStorage.getItem('matchedEntries');
+      if (savedMatches) {
+        const parsedMatches = JSON.parse(savedMatches);
+        this.entries.forEach(entry => {
+          const savedMatch = parsedMatches.find(match => match.id === entry.id);
+          if (savedMatch) {
+            entry.projectId = savedMatch.projectId;
+            entry.taskId = savedMatch.taskId;
+          }
+        });
+      }
     }
   },
   watch: {
     entries: {
       immediate: true,
-      handler(newEntries) {
-        newEntries.forEach(entry => {
-          console.log(`Trying to match project for entry: ${entry.projectName}`);
-          if (!entry.projectId) {
-            const matchingProject = this.findMatchingProject(entry.projectName);
-            if (matchingProject) {
-              console.log(`Matched project: ${matchingProject.name}`);
-              entry.projectId = matchingProject.id;
-              this.$emit('projectSelected', matchingProject.id);
-            } else {
-              console.log(`No matching project found for: ${entry.projectName}`);
-            }
-          }
-          if (entry.projectId && !entry.taskId) {
-            const matchingTask = this.findMatchingTask(entry.projectId, entry.task);
-            if (matchingTask) {
-              console.log(`Matched task: ${matchingTask.name}`);
-              entry.taskId = matchingTask.id;
-            } else {
-              console.log(`No matching task found for: ${entry.task}`);
-            }
-          }
-        });
+      handler() {
+        this.performMatching();
+      }
+    },
+    projects: {
+      handler() {
+        if (this.entries.length) {
+          this.performMatching();
+        }
       }
     }
+  },
+  mounted() {
+    this.loadMatchesFromLocalStorage();
   }
 }
 </script>
@@ -132,4 +169,3 @@ export default {
   margin-top: 20px;
 }
 </style>
-

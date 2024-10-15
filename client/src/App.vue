@@ -7,6 +7,7 @@
       :tasks="mocoTasks"
       @transfer="handleTransfer"
       @projectSelected="handleProjectSelected"
+      :projectsLoaded="projectsLoaded"
     />
   </div>
 </template>
