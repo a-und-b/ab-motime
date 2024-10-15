@@ -8,7 +8,10 @@
     "server": "nodemon server/server.js",
     "client": "npm run serve --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "npm run build --prefix client"
+    "build": "npm run build --prefix client",
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:8080 && electron .\"",
+    "electron-build": "npm run build && electron-builder"
   },
   "keywords": [
     "time-tracking",
@@ -37,10 +40,33 @@
     "@vue/cli-service": "~5.0.0",
     "autoprefixer": "^10.4.20",
     "concurrently": "^6.0.0",
+    "electron": "^33.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "nodemon": "^2.0.22",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13"
+  },
+  "build": {
+    "appId": "com.yourcompany.motime",
+    "productName": "MoTime",
+    "files": [
+      "client/dist/**/*",
+      "server/**/*",
+      "electron.js",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }

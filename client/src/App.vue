@@ -83,7 +83,7 @@ export default {
       timeEntries,
       mocoProjects,
       mocoTasks,
-      handleTransfer,
+      handleTransfer, 
       handleProjectSelected
     }
   }

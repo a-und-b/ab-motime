@@ -1,3 +1,4 @@
+const isElectron = process.versions.hasOwnProperty('electron');
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
@@ -31,6 +32,10 @@ if (process.env.NODE_ENV === 'production') {
 // Error handling middleware
 app.use(errorHandler);
 
-app.listen(port, () => {
-  logger.info(`Server running on port ${port}`);
-});
+if (!isElectron) {
+  app.listen(port, () => {
+    logger.info(`Server running on port ${port}`);
+  });
+}
+
+module.exports = app;
