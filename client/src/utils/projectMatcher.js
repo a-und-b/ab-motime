@@ -31,7 +31,19 @@ export function extractTaskName(timingProjectName) {
 
 export function findMatchingTask(timingProjectName, mocoTasks) {
   const taskName = extractTaskName(timingProjectName);
-  return mocoTasks.find(task => 
+  
+  // First, try for an exact match (case-insensitive)
+  const exactMatch = mocoTasks.find(task => 
     task.name.toLowerCase() === taskName.toLowerCase()
   );
-}
+  
+  if (exactMatch) return exactMatch;
+
+  // If no exact match, try partial matching
+  const partialMatch = mocoTasks.find(task => 
+    task.name.toLowerCase().includes(taskName.toLowerCase()) ||
+    taskName.toLowerCase().includes(task.name.toLowerCase())
+  );
+
+  return partialMatch || null;
+} 
