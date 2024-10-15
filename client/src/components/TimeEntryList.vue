@@ -1,11 +1,10 @@
 <template>
   <div>
-    <h2 class="text-xl font-semibold mb-2">Time Entries</h2>
     <div v-if="entries.length === 0" class="text-gray-500">No time entries available.</div>
     <ul v-else class="space-y-2">
-      <li v-for="entry in entries" :key="entry.id" class="bg-white shadow overflow-hidden sm:rounded-md">
-        <div class="px-4 py-4 sm:px-6">
-          <div class="flex items-center justify-between">
+      <li v-for="entry in entries" :key="entry.id" class="bg-white shadow-md overflow-hidden sm:rounded-md">
+        <div class="px-4 py-4 flex flex-col align-text-bottom">
+          <div class="flex items-center justify-between mb-1">
             <p class="text-sm font-medium text-indigo-600 truncate">
               {{ entry.projectName }}
             </p>
@@ -15,20 +14,20 @@
               </p>
             </div>
           </div>
-          <div class="mt-2 sm:flex sm:justify-between">
-            <div class="sm:flex">
-              <p class="flex items-center text-sm text-gray-500">
+          <div class="mt-1 sm:flex sm:justify-between">
+            <div class="flex items-center">
+              <p class="text-left text-sm text-gray-500">
                 {{ entry.task }}
               </p>
             </div>
             <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-              <select v-model="entry.projectId" @change="handleProjectChange(entry)" class="mr-2">
+              <select v-model="entry.projectId" @change="handleProjectChange(entry)" class="mr-2 border border-gray-300 rounded-md p-2">
                 <option value="">Select Project</option>
                 <option v-for="project in projects" :key="project.id" :value="project.id">
                   {{ project.name }}
                 </option>
               </select>
-              <select v-model="entry.taskId" class="mr-2">
+              <select v-model="entry.taskId" class="mr-2 border border-gray-300 rounded-md p-2">
                 <option value="">Select Task</option>
                 <option v-for="task in tasksForProject(entry.projectId)" :key="task.id" :value="task.id">
                   {{ task.name }}
@@ -40,7 +39,7 @@
                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
               >
                 Transfer
-              </button>
+              </button> 
             </div>
           </div>
         </div>
