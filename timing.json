@@ -8,35 +8,27 @@
     "startDate" : "2024-10-14T13:10:00Z"
   },
   {
-    "activityTitle" : "Simple Order Page: Optimierung und Bestätigungs-Seite",
-    "duration" : "2:15:00",
-    "endDate" : "2024-10-14T17:52:00Z",
-    "id" : "3712807243490987777",
-    "project" : "PRI ▸ Checkfox Support ▸ Design",
-    "startDate" : "2024-10-14T15:37:00Z"
+    "activityTitle" : "„DataFox” – UI\/AI-Workflow",
+    "duration" : "0:00:08",
+    "endDate" : "2024-10-14T16:17:08Z",
+    "id" : "3712833069611009280",
+    "project" : "PRI ▸ DataFox",
+    "startDate" : "2024-10-14T16:17:00Z"
   },
   {
-    "activityTitle" : "Backend API Entwicklung",
-    "duration" : "3:30:00",
-    "endDate" : "2024-10-15T12:30:00Z",
-    "id" : "3712807243490987778",
-    "project" : "PRI ▸ Checkfox Support ▸ Entwicklung",
-    "startDate" : "2024-10-15T09:00:00Z"
+    "activityTitle" : "Checkfox SEO\/Content-Page Templates",
+    "duration" : "0:28:58",
+    "endDate" : "2024-10-16T09:20:00Z",
+    "id" : "3714091938487290880",
+    "project" : "PRI ▸ Checkfox Support",
+    "startDate" : "2024-10-16T08:51:01Z"
   },
   {
-    "activityTitle" : "Kundenbesprechung und Anforderungsanalyse",
-    "duration" : "1:00:00",
-    "endDate" : "2024-10-16T11:00:00Z",
-    "id" : "3712807243490987779",
-    "project" : "PRI ▸ Powerleads ▸ Beratung",
-    "startDate" : "2024-10-16T10:00:00Z"
-  },
-  {
-    "activityTitle" : "Bugfixing und Performance-Optimierung",
-    "duration" : "2:45:00",
-    "endDate" : "2024-10-16T16:45:00Z",
-    "id" : "3712807243490987780",
-    "project" : "PRI ▸ Checkfox Support ▸ Entwicklung",
-    "startDate" : "2024-10-16T14:00:00Z"
+    "activityTitle" : "Checkfox SEO\/Content-Page Templates",
+    "duration" : "0:35:33",
+    "endDate" : "2024-10-16T10:29:05Z",
+    "id" : "3714091977905425920",
+    "project" : "PRI ▸ Checkfox Support",
+    "startDate" : "2024-10-16T09:53:32Z"
   }
 ]
