@@ -12,7 +12,7 @@ function roundToQuarterHour(durationInMs) {
   const roundedMinutes = Math.ceil(minutes / 15) * 15;
   const hours = Math.floor(roundedMinutes / 60);
   const remainingMinutes = roundedMinutes % 60;
-  return `${hours}h ${remainingMinutes}m`;
+  return `${String(hours).padStart(2, '0')}:${String(remainingMinutes).padStart(2, '0')}`;
 }
 
 module.exports = {

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="bg-gray-100 p-8">
     <TimeEntryList 
       :entries="timeEntries" 
       :projects="mocoProjects"
@@ -15,11 +15,13 @@
 import { ref, onMounted } from 'vue'
 import TimeEntryList from './components/TimeEntryList.vue'
 import { getTimingData, addMocoEntry, getMocoProjects, getMocoTasks } from './api'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default {
   name: 'App',
   components: {
-    TimeEntryList
+    TimeEntryList,
+    FontAwesomeIcon
   },
   setup() {
     const timeEntries = ref([])

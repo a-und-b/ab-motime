@@ -4,19 +4,20 @@
       No time entries available.
     </div>
     <div v-else>
+      
       <div v-for="(dayEntries, date) in entries" :key="date" class="mb-6">
-        <h2 class="text-lg font-semibold mb-3">{{ formatDate(date) }}</h2>
-        <ul class="space-y-2">
+        <h2 class="text-black text-lg font-bold mb-2">{{ formatDate(date) }}</h2>
+        <ul class="space-y-4">
           <li v-for="(entry, projectName) in dayEntries" :key="`${date}-${projectName}`" 
-              class="bg-white shadow-md overflow-hidden sm:rounded-md">
+              class="p-2 bg-white rounded-xl shadow flex-col justify-start items-start gap-3 flex w-full">
             <div class="px-4 py-4 flex flex-col">
               <div class="flex items-center justify-between mb-1">
-                <p class="text-sm font-medium text-indigo-600 truncate">
+                <p class="text-sm font-medium text-blue-600 truncate">
                   {{ projectName }}
                 </p>
                 <div class="ml-2 flex-shrink-0 flex">
-                  <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    {{ entry.duration_formatted }}
+                  <p class="px-2 inline-flex align-middle leading-none py-1 pl-2 pr-2 items-center text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    <font-awesome-icon icon="clock" class="mr-1" />{{ entry.duration_formatted }} <span class="font-normal">&nbsp;({{ String(Math.floor(entry.duration_minutes / 60)).padStart(2, '0') }}:{{ String(entry.duration_minutes % 60).padStart(2, '0') }})</span>
                   </p>
                 </div>
               </div>
@@ -87,7 +88,7 @@ export default {
   emits: ['transfer', 'projectSelected'],
   methods: {
     formatDate(date) {
-      return format(new Date(date), 'EEEE, MMMM d, yyyy');
+      return format(new Date(date), 'EEEE, d. MMMM yyyy');
     },
     handleProjectChange(entry) {
       entry.taskId = null; // Reset task when project changes

@@ -29,7 +29,8 @@ exports.getTimingData = async (req, res, next) => {
       acc[date][formattedProjectName] = {
         type,
         duration_seconds: total_seconds,
-        duration_hours: Math.round(total_seconds / 36) / 100,
+        duration_hours: Math.round(total_seconds / 36) / 100, 
+        duration_minutes: Math.round(total_seconds / 60),
         duration_formatted: roundToQuarterHour(total_seconds * 1000),
         activity_count,
         ...(type === 'app-use' && {
