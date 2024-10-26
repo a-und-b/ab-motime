@@ -56,21 +56,18 @@ export default {
 
     const handleTransfer = async (entry) => {
       try {
-        const [hours, minutes] = entry.roundedDuration.split('h ');
-        const durationInHours = parseFloat(hours) + (parseInt(minutes) / 60);
-
         const response = await addMocoEntry({
-          date: entry.startDate.split('T')[0],
-          project_id: entry.projectId,
-          task_id: entry.taskId,
-          hours: durationInHours,
+          date: entry.date,
+          project_id: entry.project_id,
+          task_id: entry.task_id,
+          hours: entry.hours,
           description: entry.description
         });
         console.log('Entry transferred:', response);
-        // TODO: Update the UI to reflect the transferred entry
+        // TODO: Mark entry as transferred in the UI
       } catch (error) {
         console.error('Error transferring entry:', error);
-        // TODO: Show an error message to the user
+        // TODO: Show error message to user
       }
     }
 
