@@ -80,16 +80,40 @@ The application currently supports:
 
 ## TODO
 
-- Implement automatic task mapping
-- Add time period selection 
-- Improve error handling and user feedback
-- Improve UI/UX
-- Implement unit and integration tests
-- Implement persistent storage for transferred entries
-- Add filtering and sorting options for time entries
-- Optimize performance for larger datasets
-- Add more detailed reporting and analytics features
-- Add user authentication and authorization
+- [x] Add time period selection
+- [ ] Implement automatic task mapping
+- [ ] Improve error handling and user feedback
+  - [ ] Add toast notifications for success/error states
+  - [ ] Show loading states during API calls
+  - [ ] Add validation messages for required fields
+- [ ] Improve UI/UX
+  - [ ] Add keyboard shortcuts
+  - [ ] Implement dark mode
+  - [ ] Make interface more responsive
+- [ ] Implement testing
+  - [ ] Add unit tests for core functionality
+  - [ ] Add integration tests for API calls
+  - [ ] Add end-to-end tests for critical flows
+- [ ] Implement persistent storage
+  - [ ] Store transferred entries locally
+  - [ ] Add sync status indicators
+  - [ ] Allow retrying failed transfers
+- [ ] Add filtering and sorting
+  - [ ] Filter by project/task
+  - [ ] Sort by duration/date
+  - [ ] Search functionality
+- [ ] Optimize performance
+  - [ ] Implement pagination
+  - [ ] Add caching layer
+  - [ ] Optimize database queries
+- [ ] Add reporting features
+  - [ ] Generate time summaries
+  - [ ] Export data to CSV/PDF
+  - [ ] Create visual charts/graphs
+- [ ] Add user system
+  - [ ] Implement login/logout
+  - [ ] Add user roles and permissions
+  - [ ] Enable team collaboration
 
 ## License
 
