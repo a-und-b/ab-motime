@@ -28,14 +28,14 @@
         <h2 class="text-black text-lg font-bold mb-2">{{ formatDate(date) }}</h2>
         <ul class="space-y-5">
           <li v-for="(entry, projectName) in dayEntries" :key="`${date}-${projectName}`" 
-              class="p-2 bg-white rounded-xl shadow shadow-md flex-col justify-start items-start gap-3 flex w-full">
+              class="p-2 bg-white rounded-xl shadow-md flex-col justify-start items-start gap-3 flex w-full">
             <div class="px-1 py-1 flex flex-col w-full">
               <div class="flex items-center justify-between mb-1 w-full">
                 <p class="text-sm font-medium text-blue-600 truncate">
                   {{ projectName }}
                 </p>
                 <div class="ml-2 flex-shrink-0 flex">
-                  <p class="px-2 inline-flex align-middle leading-none py-1 pl-2 pr-2 items-center text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  <p class="px-2 inline-flex align-middle leading-none py-1 pl-2 pr-2 items-center text-xs font-semibold rounded-full bg-green-100 text-green-800">
                     <font-awesome-icon icon="clock" class="mr-1" />{{ entry.duration_formatted }} <span class="font-normal">&nbsp;({{ String(Math.floor(entry.duration_minutes / 60)).padStart(2, '0') }}:{{ String(entry.duration_minutes % 60).padStart(2, '0') }})</span>
                   </p>
                 </div>
@@ -47,8 +47,7 @@
                   <p v-if="entry.task_notes">Notes: {{ entry.task_notes }}</p>
                 </template>
                 <template v-else>
-                  <p>{{ entry.activity_count }} activities</p>
-                  <p>Apps: {{ entry.applications.join(', ') }}</p>
+                  <p class="text-xs"> {{ entry.activity_count }} activities, Apps: {{ entry.applications.join(', ') }}</p>
                 </template>
               </div>
 

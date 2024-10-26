@@ -7,16 +7,15 @@ export function extractProjectParts(projectName) {
   return null;
 }
 
-export function findMatchingProject(timingProjectName, mocoProjects) {
-  const timingParts = extractProjectParts(timingProjectName);
-  if (!timingParts) return null;
+export function findMatchingProject(timingProject, mocoProjects) {
+  if (!timingProject || !mocoProjects) return null;
 
-  return mocoProjects.find(project => {
-    const mocoParts = extractProjectParts(project.name);
-    if (!mocoParts) return false;
+  const sanitizedTimingName = sanitizeProjectName(timingProject);
 
-    return timingParts.prefix === mocoParts.prefix &&
-           timingParts.name.toLowerCase().includes(mocoParts.name.toLowerCase());
+  return mocoProjects.find(mocoProject => {
+    const sanitizedMocoName = sanitizeProjectName(mocoProject.name);
+    return sanitizedTimingName.includes(sanitizedMocoName) || 
+           sanitizedMocoName.includes(sanitizedTimingName);
   });
 }
 
@@ -25,20 +24,24 @@ export function extractTaskName(timingProjectName) {
   return parts[parts.length - 1].trim();
 }
 
-export function findMatchingTask(entry, mocoTasks) {
-  if (!mocoTasks || !mocoTasks.length) return null;
-  
-  if (entry.type === 'task' && entry.task_title) {
-    // For manual tasks, try to match by task title
-    const exactMatch = mocoTasks.find(task => 
-      task.name.toLowerCase() === entry.task_title.toLowerCase()
-    );
-    if (exactMatch) return exactMatch;
-  }
-  
-  // Default to "Development" or similar task if available
-  return mocoTasks.find(task => 
-    task.name.toLowerCase().includes('development') ||
-    task.name.toLowerCase().includes('consulting')
-  );
+export function findMatchingTask(timingTask, mocoTasks) {
+  if (!timingTask || !mocoTasks) return null;
+
+  const sanitizedTimingTask = sanitizeProjectName(timingTask);
+
+  return mocoTasks.find(mocoTask => {
+    const sanitizedMocoTask = sanitizeProjectName(mocoTask.name);
+    return sanitizedTimingTask.includes(sanitizedMocoTask) || 
+           sanitizedMocoTask.includes(sanitizedTimingTask);
+  });
+}
+
+function sanitizeProjectName(name) {
+  // Remove special characters and normalize spaces
+  return name
+    .replace(/[\[\]]/g, '') // Remove square brackets
+    .replace(/&/g, 'and')   // Replace & with 'and'
+    .replace(/[^\w\s-]/g, '') // Remove other special characters
+    .toLowerCase()
+    .trim();
 }
