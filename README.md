@@ -1,6 +1,6 @@
 # MoTime
 
-Work in progress: MoTime is a time tracking helper that integrates [Timing](https://timingapp.com/) data with [Moco](https://www.mocoapp.com). Very edge case specific for my lazy ADHD ass, but might be useful for some of you. :-) 
+MoTime is a time tracking integration tool that connects [Timing](https://timingapp.com/) with [Moco](https://www.mocoapp.com). Born from my ADHD brain's eternal struggle with manual time tracking, this work-in-progress tool might just save you from the dreaded end-of-month time entry panic too! 😄
 
 ## Current State
 
