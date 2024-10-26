@@ -1,13 +1,9 @@
 export function extractProjectParts(projectName) {
-  const timingMatch = projectName.match(/^(\w+)\s▸\s(.+?)(?:\s▸|$)/);
-  const mocoMatch = projectName.match(/^\[(\w+)\]\s(.+)/);
-
-  if (timingMatch) {
-    return { prefix: timingMatch[1], name: timingMatch[2] };
-  } else if (mocoMatch) {
-    return { prefix: mocoMatch[1], name: mocoMatch[2] };
+  // Already matches our new format
+  const match = projectName.match(/^\[(\w+)\]\s(.+)/);
+  if (match) {
+    return { prefix: match[1], name: match[2] };
   }
-
   return null;
 }
 
@@ -29,21 +25,20 @@ export function extractTaskName(timingProjectName) {
   return parts[parts.length - 1].trim();
 }
 
-export function findMatchingTask(timingProjectName, mocoTasks) {
-  const taskName = extractTaskName(timingProjectName);
+export function findMatchingTask(entry, mocoTasks) {
+  if (!mocoTasks || !mocoTasks.length) return null;
   
-  // First, try for an exact match (case-insensitive)
-  const exactMatch = mocoTasks.find(task => 
-    task.name.toLowerCase() === taskName.toLowerCase()
-  );
+  if (entry.type === 'task' && entry.task_title) {
+    // For manual tasks, try to match by task title
+    const exactMatch = mocoTasks.find(task => 
+      task.name.toLowerCase() === entry.task_title.toLowerCase()
+    );
+    if (exactMatch) return exactMatch;
+  }
   
-  if (exactMatch) return exactMatch;
-
-  // If no exact match, try partial matching
-  const partialMatch = mocoTasks.find(task => 
-    task.name.toLowerCase().includes(taskName.toLowerCase()) ||
-    taskName.toLowerCase().includes(task.name.toLowerCase())
+  // Default to "Development" or similar task if available
+  return mocoTasks.find(task => 
+    task.name.toLowerCase().includes('development') ||
+    task.name.toLowerCase().includes('consulting')
   );
-
-  return partialMatch || null;
-} 
+}

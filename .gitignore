@@ -8,3 +8,5 @@ combined.log
 error.log
 */dist
 /dist
+/data
+/context
