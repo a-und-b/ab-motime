@@ -1,65 +1,68 @@
 # MoTime
 
-MoTime is a time tracking application that integrates Timing data with Moco.
+MoTime is a time tracking application that integrates Timing.app data with Moco.
 
 ## Current State
 
 The application currently supports:
-- Reading time entries from a local Timing JSON file
-- Displaying time entries in a list view
-- Fetching projects and tasks from Moco API
-- Creating completed time entries in Moco based on Timing data
-- Basic error handling and logging
+- Direct SQLite database integration with Timing.app
+- Aggregated view of app activities and manual tasks
+- Automatic project hierarchy detection and formatting
+- Smart project and task matching between Timing and Moco
+- Detailed activity information including:
+  - App usage statistics
+  - Activity counts
+  - Task descriptions and notes
+  - Duration in various formats
 
-## Current Goal
+## Features
 
-We are currently working on implementing automatic project and task mapping between Timing and Moco. Specifically:
+### Data Collection
+- Reads directly from Timing.app's SQLite database
+- Aggregates app activities by project and date
+- Includes manual tasks with their descriptions
+- Maintains project hierarchy information
 
-1. For each Timing entry, we aim to automatically match the project name with the corresponding Moco project.
-   - The Timing project name format is typically "PREFIX ▸ Project Name ▸ Task"
-   - The Moco project name format is typically "[PREFIX] Project Name"
+### Data Processing
+- Converts project paths to Moco-compatible format (e.g., "CLI > Project Name" → "[CLI] Project Name")
+- Aggregates multiple activities into daily summaries
+- Provides both raw seconds and formatted durations
+- Tracks activity counts and used applications
 
-2. If a project match is found, we then attempt to match the task name.
-   - The task name in Timing is the last part of the project name string (after the last "▸")
-   - We look for an exact match (case-insensitive) in the Moco tasks for the matched project
-
-3. When a match is found, the UI pre-selects the matched project and task in the dropdown menus.
-
-4. Users should still be able to manually change the selected project and task if needed.
-
-This automatic mapping aims to streamline the process of transferring time entries from Timing to Moco, reducing manual work while maintaining flexibility for user adjustments.
+### User Interface
+- Daily grouping of time entries
+- Distinction between app activities and manual tasks
+- Detailed activity information display
+- Project and task selection with auto-matching
+- One-click transfer to Moco
 
 ## Setup
 
-1. Clone the repository:
+1. Clone and install:
    ```
    git clone https://github.com/a-und-b/motime.git
    cd motime
-   ```
-
-2. Install dependencies:
-   ```
    npm install
    ```
 
-3. Create a `.env` file in the root directory and add your environment variables:
+2. Create a `.env` file in the root directory and add your environment variables:
    ```
    PORT=3000
    MOCO_DOMAIN=your_moco_domain
    MOCO_API_KEY=your_moco_api_key
    NODE_ENV=development
+   TIMING_DB_PATH="/path/to/Timing.app/SQLite.db"
+   TIMING_DAYS_BACK=30
    ```
 
-4. Place your Timing JSON file in the root directory and name it `timing.json`.
-
-5. Start the development server:
+3. Start the development server:
    ```
    npm run dev
    ```
 
    This will start both the backend server and the frontend development server.
 
-6. Open your browser and navigate to `http://localhost:8080` to view the application.
+4. Open your browser and navigate to `http://localhost:8080` to view the application.
 
 ## Scripts
 
@@ -77,9 +80,10 @@ This automatic mapping aims to streamline the process of transferring time entri
 
 ## TODO
 
-- Implement automatic project and task mapping
-- Aggregate and display same-day entries with identical project and task; transfer as single entry to Moco
+- Implement automatic task mapping
+- Add time period selection 
 - Improve error handling and user feedback
+- Improve UI/UX
 - Implement unit and integration tests
 - Implement persistent storage for transferred entries
 - Add filtering and sorting options for time entries
