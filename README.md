@@ -1,6 +1,6 @@
 # MoTime
 
-MoTime is a time tracking application that integrates Timing.app data with Moco.
+Work in progress: MoTime is a time tracking helper that integrates [Timing](https://timingapp.com/) data with [Moco](https://www.mocoapp.com). Very edge case specific for my lazy ADHD ass, but might be useful for some of you. :-) 
 
 ## Current State
 
@@ -40,8 +40,8 @@ The application currently supports:
 
 1. Clone and install:
    ```
-   git clone https://github.com/a-und-b/motime.git
-   cd motime
+   git clone https://github.com/a-und-b/ab-motime.git
+   cd ab-motime
    npm install
    ```
 
