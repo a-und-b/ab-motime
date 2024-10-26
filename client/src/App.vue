@@ -1,5 +1,15 @@
 <template>
   <div id="app">
+    <div class="period-selector">
+      <button 
+        v-for="period in periods" 
+        :key="period.value"
+        :class="{ active: selectedPeriod === period.value }"
+        @click="changePeriod(period.value)"
+      >
+        {{ period.label }}
+      </button>
+    </div>
     <TimeEntryList 
       :entries="timeEntries" 
       :projects="mocoProjects"
@@ -25,22 +35,24 @@ export default {
     const timeEntries = ref([])
     const mocoProjects = ref([])
     const mocoTasks = ref({})
+    const selectedPeriod = ref('last7Days')
+    const periods = [
+      { label: 'Today', value: 'today' },
+      { label: 'Last 7 Days', value: 'last7Days' },
+      { label: 'Last 30 Days', value: 'last30Days' }
+    ]
 
     const fetchTimeEntries = async () => {
       try {
-        timeEntries.value = await getTimingData()
+        timeEntries.value = await getTimingData(selectedPeriod.value)
       } catch (error) {
         console.error('Error fetching time entries:', error)
       }
     }
 
-    const fetchMocoProjects = async () => {
-      try {
-        mocoProjects.value = await getMocoProjects()
-        console.log('Fetched Moco projects:', mocoProjects.value)
-      } catch (error) {
-        console.error('Error fetching Moco projects:', error)
-      }
+    const changePeriod = async (period) => {
+      selectedPeriod.value = period
+      await fetchTimeEntries()
     }
 
     const handleProjectSelected = async (projectId) => {
@@ -81,8 +93,33 @@ export default {
       mocoProjects,
       mocoTasks,
       handleTransfer,
-      handleProjectSelected
+      handleProjectSelected,
+      selectedPeriod,
+      periods,
+      changePeriod
     }
   }
 }
 </script>
+
+<style>
+.period-selector {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.period-selector button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background: white;
+  cursor: pointer;
+}
+
+.period-selector button.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+</style>

@@ -4,13 +4,15 @@ const api = axios.create({
   baseURL: '/api'
 })
 
-export const getTimingData = async () => {
+export const getTimingData = async (period = 'last30Days') => {
   try {
-    const response = await api.get('/timing')
-    return response.data
+    const response = await api.get('/timing', {
+      params: { period }
+    });
+    return response.data;
   } catch (error) {
-    console.error('Error fetching Timing data:', error)
-    throw error
+    console.error('Error fetching Timing data:', error);
+    throw error;
   }
 }
 

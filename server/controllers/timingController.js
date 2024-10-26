@@ -13,8 +13,26 @@ function formatProjectName(path) {
 
 exports.getTimingData = async (req, res, next) => {
   try {
+    const { period } = req.query;
+    let startDate = new Date();
+    let endDate = new Date();
+    
+    switch (period) {
+      case 'today':
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case 'last7Days':
+        startDate.setDate(startDate.getDate() - 7);
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case 'last30Days':
+      default:
+        startDate.setDate(startDate.getDate() - 30);
+        startDate.setHours(0, 0, 0, 0);
+    }
+
     await timingDb.connect();
-    const activities = await timingDb.getTimeEntries();
+    const activities = await timingDb.getTimeEntries(startDate, endDate);
 
     // Group by date and project
     const projectData = activities.reduce((acc, row) => {

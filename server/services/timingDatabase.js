@@ -25,8 +25,9 @@ class TimingDatabaseService {
     }
   }
 
-  async getTimeEntries(daysBack = 30) {
-    const cutoffDate = (Date.now() / 1000) - (daysBack * 24 * 60 * 60);
+  async getTimeEntries(startDate, endDate) {
+    const startTimestamp = Math.floor(startDate.getTime() / 1000);
+    const endTimestamp = Math.floor(endDate.getTime() / 1000);
     
     const query = `
       WITH RECURSIVE ProjectHierarchy AS (
@@ -98,7 +99,7 @@ class TimingDatabaseService {
         type
     `;
 
-    return await this.db.all(query, [cutoffDate, cutoffDate]);
+    return await this.db.all(query, [startTimestamp, endTimestamp]);
   }
 
   async getApplicationActivities() {
