@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="bg-gray-100 p-8">
+  <div id="app" class="bg-gray-100 p-8 h-screen">
     <TimeEntryList 
       :entries="timeEntries" 
       :projects="mocoProjects"
