@@ -3,6 +3,8 @@ const path = require('path');
 const logger = require('../utils/logger');
 const { roundToQuarterHour } = require('../utils/timeUtils');
 const timingDb = require('../services/timingDatabase');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const TIMING_DATA_PATH = path.join(__dirname, '../../timing.json');
 
@@ -11,15 +13,23 @@ function formatProjectName(path) {
   return project ? `[${client}] ${project}` : path;
 }
 
+console.log('MINIMUM_DURATION_MINUTES:', process.env.MINIMUM_DURATION_MINUTES);
+const MINIMUM_DURATION_MINUTES = parseInt(process.env.MINIMUM_DURATION_MINUTES) || 5;
+
 exports.getTimingData = async (req, res, next) => {
   try {
     await timingDb.connect();
     const activities = await timingDb.getTimeEntries();
 
-    // Group by date and project
+    // Group by date and project with duration filter
     const projectData = activities.reduce((acc, row) => {
       const { date, project_path, type, total_seconds, activity_count, app_names, task_title, task_notes } = row;
       
+      // Filter out entries shorter than minimum duration
+      if (total_seconds < (MINIMUM_DURATION_MINUTES * 60)) {
+        return acc;
+      }
+
       if (!acc[date]) {
         acc[date] = {};
       }
@@ -29,7 +39,7 @@ exports.getTimingData = async (req, res, next) => {
       acc[date][formattedProjectName] = {
         type,
         duration_seconds: total_seconds,
-        duration_hours: Math.round(total_seconds / 36) / 100, 
+        duration_hours: Math.round(total_seconds / 36) / 100,
         duration_minutes: Math.round(total_seconds / 60),
         duration_formatted: roundToQuarterHour(total_seconds * 1000),
         activity_count,
