@@ -33,8 +33,9 @@ The application currently supports:
 - Daily grouping of time entries
 - Distinction between app activities and manual tasks
 - Detailed activity information display
-- Project and task selection with auto-matching
+- Project selection with auto-matching
 - One-click transfer to Moco
+- Configurable minimum duration for entries (default: 5 minutes)
 
 ## Setup
 
@@ -53,6 +54,7 @@ The application currently supports:
    NODE_ENV=development
    TIMING_DB_PATH="/path/to/Timing.app/SQLite.db"
    TIMING_DAYS_BACK=30
+   MINIMUM_DURATION_MINUTES=5
    ```
 
 3. Start the development server:
