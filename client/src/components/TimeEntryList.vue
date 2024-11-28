@@ -163,7 +163,7 @@ export default {
         project_id: entry.projectId,
         task_id: entry.taskId,
         hours: entry.duration_hours,
-        description: entry.type === 'task' ? entry.task_title : `Worked with: ${entry.applications.join(', ')}`
+        description: entry.description || (entry.type === 'task' ? entry.task_title : `Worked with: ${entry.applications.join(', ')}`)
       };
 
       this.$emit('transfer', transferData);

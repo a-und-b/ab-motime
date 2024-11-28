@@ -36,21 +36,50 @@ exports.getTimingData = async (req, res, next) => {
       
       const formattedProjectName = formatProjectName(project_path);
       
-      acc[date][formattedProjectName] = {
-        type,
-        duration_seconds: total_seconds,
-        duration_hours: Math.round(total_seconds / 36) / 100,
-        duration_minutes: Math.round(total_seconds / 60),
-        duration_formatted: roundToQuarterHour(total_seconds * 1000),
-        activity_count,
-        ...(type === 'app-use' && {
-          applications: app_names ? app_names.split(',').sort() : []
-        }),
-        ...(type === 'task' && {
-          task_title,
-          task_notes
-        })
-      };
+      // If entry already exists for this project on this date, accumulate the values
+      if (acc[date][formattedProjectName]) {
+        const existing = acc[date][formattedProjectName];
+        
+        // Accumulate durations
+        existing.duration_seconds += total_seconds;
+        existing.duration_hours = Math.round((existing.duration_seconds / 3600) * 100) / 100;
+        existing.duration_minutes = Math.round(existing.duration_seconds / 60);
+        existing.duration_formatted = roundToQuarterHour(existing.duration_seconds * 1000);
+        
+        // Accumulate activity count
+        existing.activity_count += activity_count;
+        
+        // Merge applications if it's an app-use type
+        if (type === 'app-use' && app_names) {
+          const newApps = app_names.split(',');
+          existing.applications = [...new Set([...existing.applications, ...newApps])].sort();
+        }
+        
+        // For tasks, concatenate titles and notes
+        if (type === 'task') {
+          existing.task_title = existing.task_title ? `${existing.task_title}; ${task_title}` : task_title;
+          if (task_notes) {
+            existing.task_notes = existing.task_notes ? `${existing.task_notes}; ${task_notes}` : task_notes;
+          }
+        }
+      } else {
+        // Create new entry
+        acc[date][formattedProjectName] = {
+          type,
+          duration_seconds: total_seconds,
+          duration_hours: Math.round(total_seconds / 36) / 100,
+          duration_minutes: Math.round(total_seconds / 60),
+          duration_formatted: roundToQuarterHour(total_seconds * 1000),
+          activity_count,
+          ...(type === 'app-use' && {
+            applications: app_names ? app_names.split(',').sort() : []
+          }),
+          ...(type === 'task' && {
+            task_title,
+            task_notes
+          })
+        };
+      }
       
       return acc;
     }, {});
