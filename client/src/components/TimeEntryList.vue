@@ -43,11 +43,11 @@
               
               <div class="text-sm text-gray-500 w-full">
                 <template v-if="entry.type === 'task'">
-                  <p>Task: {{ entry.task_title }}</p>
-                  <p v-if="entry.task_notes">Notes: {{ entry.task_notes }}</p>
+                  <p><strong>Task:</strong> {{ entry.task_title }}</p>
+                  <p v-if="entry.task_notes"><strong>Notes:</strong> {{ entry.task_notes }}</p>
                 </template>
                 <template v-else>
-                  <p class="text-xs"> {{ entry.activity_count }} activities, Apps: {{ entry.applications.join(', ') }}</p>
+                  <p class="text-xs"><strong>Activities:</strong> {{ entry.activity_count }}, <strong>Apps:</strong> {{ entry.applications.join(', ') }}</p>
                 </template>
               </div>
 
@@ -67,7 +67,13 @@
                 </select>
               </div>
               <div class="w-full flex items-stretch justify-stretch">
-                <input type="text" v-model="entry.description" class="w-full mr-2 px-2 bg-gray-50 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Description" />
+                <input 
+                  type="text" 
+                  class="w-full mr-2 px-2 bg-gray-50 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Description"
+                  :value="entry.type === 'task' ? entry.task_title : `Worked with: ${entry.applications.join(', ')}`"
+                  @input="e => entry.description = e.target.value"
+                />
                 <button
                   @click="handleTransfer(date, projectName, entry)"
                   :disabled="!entry.projectId || !entry.taskId"
